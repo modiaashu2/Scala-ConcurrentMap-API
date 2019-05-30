@@ -28,7 +28,7 @@ class GetNoneTest extends Specification {
   "putkeyval" should {
     "return 'SUCCESS'" in {
       var x = new Example.Mymap.putServlet()
-      x.putkeyval("7", "Hello") === "SUCCESS"
+      x.putkeyval("13", "Hello") === "SUCCESS"
 
     }
     "return 'Key Already Present'" in {
