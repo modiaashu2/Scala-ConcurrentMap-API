@@ -6,7 +6,7 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object FakeTest {
+class FakeTest {
   def main(args : Array[String]) {
     println( "Hello World!" )
     var x = 1

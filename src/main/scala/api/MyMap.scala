@@ -9,19 +9,25 @@ import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
 
 import scala.collection.concurrent
 
-object MyMap {
+class MyMap {
   val map: concurrent.Map[String, String] = new ConcurrentHashMap[String, String].asScala
+
+
+  def createResponse(request: HttpServletRequest, response: HttpServletResponse, route: String, returnVal: Object): Unit = {
+    val async = request.startAsync
+    response.setContentType("text/html")
+    response.setStatus(HttpServletResponse.SC_OK)
+    response.getWriter.println(s"<H2>$route Triggered" + returnVal)
+    async.complete()
+  }
 
   class getServlet extends HttpServlet {
     override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
-      var key = req.getParameter("key")
-      var x = getKey(key)
-      //        println("sleeping" + key)
+      val key = req.getParameter("key")
+      val returnVal = getKey(key)
       val async = req.startAsync
-      //        Thread.sleep(10000)
       resp.setContentType("text/html")
-      resp.setStatus(HttpServletResponse.SC_OK)
-      resp.getWriter.println(s"<h2>Get Triggered </h2>" + x)
+      createResponse(req, resp, "getVal", returnVal)
       async.complete()
       return
     }
@@ -33,18 +39,10 @@ object MyMap {
 
   class putServlet extends HttpServlet {
     override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
-      var key = req.getParameter("key")
-      var value = req.getParameter("value")
-      var x = putKeyVal(key, value)
-
-      val async = req.startAsync
-      println("Hi")
-      print(value)
-      resp.setContentType("text/html")
-      resp.setStatus(HttpServletResponse.SC_OK)
-      resp.getWriter.println(s"<h2>Put Triggered</h2>" + x)
-      async.complete()
-      return
+      val key = req.getParameter("key")
+      val value = req.getParameter("value")
+      val returnVal = putKeyVal(key, value)
+      createResponse(req, resp, "putVal", returnVal)
     }
 
     def putKeyVal(key: String, value: String): String = {
@@ -61,14 +59,10 @@ object MyMap {
   class updateServlet extends HttpServlet {
     override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
 
-      var key = req.getParameter("key")
-      var value = req.getParameter("value")
-      var returnVal = updateKey(key, value)
-      val async = req.startAsync
-      resp.setContentType("text/html")
-      resp.setStatus(HttpServletResponse.SC_OK)
-      resp.getWriter.println(s"<h2>Update Triggered</h2>" + returnVal)
-      async.complete()
+      val key = req.getParameter("key")
+      val value = req.getParameter("value")
+      val returnVal = updateKey(key, value)
+      createResponse(req, resp, "updateVal", returnVal)
     }
 
     def updateKey(key: String, value: String): Option[String] = {
@@ -79,17 +73,13 @@ object MyMap {
   class deleteServlet extends HttpServlet {
     override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
 
-      var key = req.getParameter("key")
-      var returnVal = deleteKey(key)
-      val async = req.startAsync
-      resp.setContentType("text/html")
-      resp.setStatus(HttpServletResponse.SC_OK)
-      resp.getWriter.println(s"<h2>Delete Triggered</h2>" + returnVal)
-      async.complete()
+      val key = req.getParameter("key")
+      val returnVal = deleteKey(key)
+      createResponse(req, resp, "deleteVal", returnVal)
     }
 
     def deleteKey(key: String): Option[String] = {
-      var returnVal = map.get(key)
+      val returnVal = map.get(key)
       map.remove(key)
       return returnVal
     }

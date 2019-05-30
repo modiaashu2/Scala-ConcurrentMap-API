@@ -2,12 +2,10 @@ package api
 
 import org.eclipse.jetty.server.{Server, ServerConnector}
 import org.eclipse.jetty.servlet.ServletHandler
+import org.eclipse.jetty.util.thread.QueuedThreadPool
 
-object ServerInitializer {
-
-  import MyMap._
-  import org.eclipse.jetty.util.thread.QueuedThreadPool
-
+class ServerInitializer {
+  val mapAPI = new MyMap()
   val threadPool = new QueuedThreadPool(6, 1)
   val server = new Server(threadPool)
   var connector = new ServerConnector(server)
@@ -26,10 +24,10 @@ object ServerInitializer {
     println("concat arguments = " + foo(args))
 
     server.setHandler(handler)
-    handler.addServletWithMapping(classOf[getServlet], getRoute)
-    handler.addServletWithMapping(classOf[putServlet], putRoute)
-    handler.addServletWithMapping(classOf[updateServlet], updateRoute)
-    handler.addServletWithMapping(classOf[deleteServlet], deleteRoute)
+    handler.addServletWithMapping(classOf[mapAPI.getServlet], getRoute)
+    handler.addServletWithMapping(classOf[mapAPI.putServlet], putRoute)
+    handler.addServletWithMapping(classOf[mapAPI.updateServlet], updateRoute)
+    handler.addServletWithMapping(classOf[mapAPI.deleteServlet], deleteRoute)
 
     server.start()
     println(s"Server started on $port with Routes: '$getRoute', '$putRoute', '$updateRoute', '$deleteRoute'")
