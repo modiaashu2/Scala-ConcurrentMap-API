@@ -1,4 +1,4 @@
-package Getsetapi
+package api
 
 import java.util.Calendar
 
