@@ -8,7 +8,7 @@ class ServerInitializer {
   val mapAPI = new MyMap()
   val threadPool = new QueuedThreadPool(6, 1)
   val server = new Server(threadPool)
-  var connector = new ServerConnector(server)
+  val connector = new ServerConnector(server)
   connector.setPort(port)
   server.setConnectors(Array(connector))
   val getRoute = "/get"
@@ -17,11 +17,9 @@ class ServerInitializer {
   val deleteRoute = "/delete"
   val handler = new ServletHandler()
 
-  def foo(x: Array[String]) = x.foldLeft("")((a, b) => a + b)
+  val port = 8090
 
   def main(args: Array[String]) {
-    println("Hello World!")
-    println("concat arguments = " + foo(args))
 
     server.setHandler(handler)
     handler.addServletWithMapping(classOf[mapAPI.getServlet], getRoute)
@@ -34,9 +32,6 @@ class ServerInitializer {
     server.join()
 
   }
-
-
-  var port = 8090
 
 
 }

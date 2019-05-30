@@ -13,7 +13,8 @@ class MyMap {
   val map: concurrent.Map[String, String] = new ConcurrentHashMap[String, String].asScala
 
 
-  def createResponse(request: HttpServletRequest, response: HttpServletResponse, route: String, returnVal: Object): Unit = {
+  def createResponse(request: HttpServletRequest,
+                     response: HttpServletResponse, route: String, returnVal: Option[String]): Unit = {
     val async = request.startAsync
     response.setContentType("text/html")
     response.setStatus(HttpServletResponse.SC_OK)
@@ -29,11 +30,10 @@ class MyMap {
       resp.setContentType("text/html")
       createResponse(req, resp, "getVal", returnVal)
       async.complete()
-      return
     }
 
     def getKey(key: String): Option[String] = {
-      return map.get(key)
+      map.get(key)
     }
   }
 
@@ -42,17 +42,17 @@ class MyMap {
       val key = req.getParameter("key")
       val value = req.getParameter("value")
       val returnVal = putKeyVal(key, value)
-      createResponse(req, resp, "putVal", returnVal)
+      createResponse(req, resp, "putVal", Option(returnVal))
     }
 
     def putKeyVal(key: String, value: String): String = {
       var returnVal = ""
-      if (map.get(key) == None) {
+      if (map.get(key).isEmpty) {
         map.put(key, value)
         returnVal = "SUCCESS"
       }
       else returnVal = "Key Already Present"
-      return returnVal
+      returnVal
     }
   }
 
@@ -66,7 +66,7 @@ class MyMap {
     }
 
     def updateKey(key: String, value: String): Option[String] = {
-      return map.put(key, value)
+      map.put(key, value)
     }
   }
 
@@ -81,7 +81,7 @@ class MyMap {
     def deleteKey(key: String): Option[String] = {
       val returnVal = map.get(key)
       map.remove(key)
-      return returnVal
+      returnVal
     }
   }
 

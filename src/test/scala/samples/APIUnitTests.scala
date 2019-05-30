@@ -3,10 +3,7 @@ package samples
 import org.junit.runner.RunWith
 import org.specs2.mutable._
 import org.specs2.runner._
-import java.util.concurrent.ConcurrentHashMap
-
 import api.MyMap
-import api._
 
 
 @RunWith(classOf[JUnitRunner])
