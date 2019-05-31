@@ -10,7 +10,7 @@ import api.MyMap
 class APIUnitTests extends Specification {
 
   "getval when the instance is created" should {
-    val mapAPI = new MyMap()
+    val mapAPI = MyMap
     "return none" in {
       val getServlet = new mapAPI.getServlet()
       getServlet.getKey("5") === None
@@ -24,7 +24,7 @@ class APIUnitTests extends Specification {
   }
 
   "putkeyval" should {
-    val mapAPI = new MyMap()
+    val mapAPI = MyMap
     "return 'SUCCESS'" in {
       val putServlet = new mapAPI.putServlet()
       putServlet.putKeyVal("13", "Hello") === "SUCCESS"
@@ -38,7 +38,7 @@ class APIUnitTests extends Specification {
   }
 
   "updatekey" should {
-    val mapAPI = new MyMap()
+    val mapAPI = MyMap
     "return None" in {
       val updateServlet = new mapAPI.updateServlet()
       updateServlet.updateKey("14", "Hey") === None
@@ -52,7 +52,7 @@ class APIUnitTests extends Specification {
   }
 
   "deletekey" should {
-    val mapAPI = new MyMap()
+    val mapAPI = MyMap
     "return None" in {
       val deleteServlet = new mapAPI.deleteServlet()
       deleteServlet.deleteKey("9") === None
