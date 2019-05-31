@@ -5,9 +5,11 @@ import org.eclipse.jetty.servlet.ServletHandler
 import org.eclipse.jetty.util.thread.QueuedThreadPool
 
 class ServerInitializer {
-  val mapAPI = new MyMap()
-  val threadPool = new QueuedThreadPool(6, 1)
-  val server = new Server(threadPool)
+  val mapAPI = MyMap
+  val port = 8090
+
+//  val threadPool = new QueuedThreadPool(6, 1)
+  val server = new Server()
   val connector = new ServerConnector(server)
   connector.setPort(port)
   server.setConnectors(Array(connector))
@@ -17,7 +19,6 @@ class ServerInitializer {
   val deleteRoute = "/delete"
   val handler = new ServletHandler()
 
-  val port = 8090
 
   def main(args: Array[String]) {
 

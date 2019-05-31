@@ -2,34 +2,39 @@ package api
 
 
 import scala.collection.JavaConverters._
-
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.{ConcurrentHashMap, Executors}
 
 import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
+import org.eclipse.jetty.util.thread.QueuedThreadPool
 
 import scala.collection.concurrent
 
-class MyMap {
+object MyMap {
   val map: concurrent.Map[String, String] = new ConcurrentHashMap[String, String].asScala
 
-
+  val threadPool = Executors.newFixedThreadPool(1)
   def createResponse(request: HttpServletRequest,
                      response: HttpServletResponse, route: String, returnVal: Option[String]): Unit = {
-    val async = request.startAsync
-    response.setContentType("text/html")
-    response.setStatus(HttpServletResponse.SC_OK)
-    response.getWriter.println(s"<H2>$route Triggered" + returnVal)
-    async.complete()
+
+    request.startAsync
+    threadPool.execute(new Runnable {
+      override def run(): Unit = {
+        response.setContentType("text/html")
+        response.setStatus(HttpServletResponse.SC_OK)
+        response.getWriter.println(s"<H2>$route Triggered" + returnVal)
+        request.getAsyncContext.complete()
+      }
+    })
+
+//    async.complete()
   }
 
   class getServlet extends HttpServlet {
     override protected def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
       val key = req.getParameter("key")
       val returnVal = getKey(key)
-      val async = req.startAsync
       resp.setContentType("text/html")
       createResponse(req, resp, "getVal", returnVal)
-      async.complete()
     }
 
     def getKey(key: String): Option[String] = {
