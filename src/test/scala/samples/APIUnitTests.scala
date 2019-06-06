@@ -5,7 +5,6 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import api.MyMap
 
-
 @RunWith(classOf[JUnitRunner])
 class APIUnitTests extends Specification {
 
@@ -13,13 +12,13 @@ class APIUnitTests extends Specification {
     val mapAPI = MyMap
     "return none" in {
       val getServlet = new mapAPI.getServlet()
-      getServlet.getKey("5") === None
+      getServlet.getKeyFromMap("5") === None
     }
 
     "return expected value" in {
       val getServlet = new mapAPI.getServlet()
-      mapAPI.map.put("6", "Hi")
-      getServlet.getKey("6") === Some("Hi")
+      mapAPI.partitionMap(6/5000).put("6", "Hi")
+      getServlet.getKeyFromMap("6") === Some("Hi")
     }
   }
 
@@ -32,7 +31,7 @@ class APIUnitTests extends Specification {
     }
     "return 'Key Already Present'" in {
       val putServlet = new mapAPI.putServlet()
-      mapAPI.map.put("7", "Hello")
+      mapAPI.partitionMap(7/5000).put("7", "Hello")
       putServlet.putKeyVal("7", "Hello") === "Key Already Present"
     }
   }
@@ -45,7 +44,7 @@ class APIUnitTests extends Specification {
     }
     "return expected value" in {
       val updateServlet = new mapAPI.updateServlet()
-      mapAPI.map.put("8", "Hey")
+      mapAPI.partitionMap(8/5000).put("8", "Hey")
       updateServlet.updateKey("8", "Hola") === Some("Hey")
     }
 
@@ -59,7 +58,7 @@ class APIUnitTests extends Specification {
     }
     "return expected value" in {
       val deleteServlet = new mapAPI.deleteServlet()
-      mapAPI.map.put("10", "Bonjour")
+      mapAPI.partitionMap(10/5000).put("10", "Bonjour")
       deleteServlet.deleteKey("10") === Some("Bonjour")
     }
   }

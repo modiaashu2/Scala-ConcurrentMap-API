@@ -2,14 +2,13 @@ package api
 
 import org.eclipse.jetty.server.{Server, ServerConnector}
 import org.eclipse.jetty.servlet.ServletHandler
-import org.eclipse.jetty.util.thread.QueuedThreadPool
+import org.eclipse.jetty.util.thread.{ExecutorSizedThreadPool, QueuedThreadPool}
 
 class ServerInitializer {
   val mapAPI = MyMap
   val port = 8090
-
-//  val threadPool = new QueuedThreadPool(6, 1)
-  val server = new Server()
+  val threadPool = new ExecutorSizedThreadPool()
+  val server = new Server(threadPool)
   val connector = new ServerConnector(server)
   connector.setPort(port)
   server.setConnectors(Array(connector))
@@ -21,7 +20,6 @@ class ServerInitializer {
 
 
   def main(args: Array[String]) {
-
     server.setHandler(handler)
     handler.addServletWithMapping(classOf[mapAPI.getServlet], getRoute)
     handler.addServletWithMapping(classOf[mapAPI.putServlet], putRoute)
